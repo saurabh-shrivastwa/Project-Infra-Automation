@@ -23,30 +23,30 @@ stages:
           displayName: Find Repository Files
   
 
-        # - task: TerraformInstaller@1
-          # inputs:
-        #     terraformVersion: 'latest'
-        # - task: TerraformTask@5
-        #   inputs:
-        #     provider: 'azurerm'
-        #     command: 'init'
-        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
-        #     backendServiceArm: 'Service-Connection'
-        #     backendAzureRmStorageAccountName: 'storagevistara999'
-        #     backendAzureRmContainerName: 'tfstate'
-        #     backendAzureRmKey: 'backendtfstate'
+        - task: TerraformInstaller@1
+          inputs:
+            terraformVersion: 'latest'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'Service-Connection'
+            backendAzureRmStorageAccountName: 'storagevistara999'
+            backendAzureRmContainerName: 'tfstate'
+            backendAzureRmKey: 'backendtfstate'
 
-        # - task: TerraformTask@5
-        #   inputs:
-        #     provider: 'azurerm'
-        #     command: 'validate'
-        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
 
-        # - task: TerraformTask@5
-        #   inputs:
-        #     provider: 'azurerm'
-        #     command: 'validate'
-        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
        
       
 
