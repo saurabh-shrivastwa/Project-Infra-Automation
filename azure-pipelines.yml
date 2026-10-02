@@ -18,7 +18,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Infra/Project-Infra-Automation'
             backendServiceArm: 'Service-Connection'
             backendAzureRmStorageAccountName: 'storagevistara999'
             backendAzureRmContainerName: 'tfstate'
@@ -28,13 +28,13 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Infra/Project-Infra-Automation'
 
         - task: TerraformTask@5
           inputs:
             provider: 'azurerm'
             command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Infra/Project-Infra-Automation'
        
       
 
