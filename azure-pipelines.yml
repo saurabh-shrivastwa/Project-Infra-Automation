@@ -18,6 +18,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
             backendServiceArm: 'Service-Connection'
             backendAzureRmStorageAccountName: 'storagevistara999'
             backendAzureRmContainerName: 'tfstate'
