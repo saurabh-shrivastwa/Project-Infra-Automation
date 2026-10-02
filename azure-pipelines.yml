@@ -11,6 +11,12 @@ stages:
       - job: TerraformJob
         displayName: InitValidatePlan
         steps: 
+        - powershell: |
+            Write-Host "Default Directory: $(System.DefaultWorkingDirectory)"
+            Write-Host "Build Sources Directory: $(Build.SourcesDirectory)"
+            Get-ChildItem "$(System.DefaultWorkingDirectory)"
+          displayName: Check Workspace
+
         - task: TerraformInstaller@1
           inputs:
             terraformVersion: 'latest'
