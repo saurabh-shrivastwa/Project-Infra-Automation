@@ -1,0 +1,30 @@
+trigger:
+  - main
+
+pool: Infra-Self-hosted
+
+variables:  
+
+stages: 
+  - stage: TerraformJob
+    displayName: ContinousIntegration
+    jobs: TerraformJobs
+    displayName: InitValidatePlan
+    - job: TerraformInit
+      steps:
+      - task: TerraformTask@5
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+          backendServiceArm: 'Service-Connection'
+          backendAzureRmOverrideSubscriptionID: '1a09cc15-f2cb-43ae-bfb9-05fc711f965c'
+          backendAzureRmResourceGroupName: 'vistara-automation'
+          backendAzureRmStorageAccountName: 'storagevistara999'
+          backendAzureRmContainerName: 'tfstate'
+          backendAzureRmKey: 'statefile'
+      
+
+
+
+
