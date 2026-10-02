@@ -17,30 +17,36 @@ stages:
             Get-ChildItem "$(System.DefaultWorkingDirectory)"
           displayName: Check Workspace
 
-        - task: TerraformInstaller@1
-          inputs:
-            terraformVersion: 'latest'
-        - task: TerraformTask@5
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
-            backendServiceArm: 'Service-Connection'
-            backendAzureRmStorageAccountName: 'storagevistara999'
-            backendAzureRmContainerName: 'tfstate'
-            backendAzureRmKey: 'backendtfstate'
+        - powershell: |
+            Get-ChildItem "$(System.DefaultWorkingDirectory)" -Recurse -File |
+            Select-Object FullName
+          displayName: Find Repository Files
+  
 
-        - task: TerraformTask@5
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+        # - task: TerraformInstaller@1
+          # inputs:
+        #     terraformVersion: 'latest'
+        # - task: TerraformTask@5
+        #   inputs:
+        #     provider: 'azurerm'
+        #     command: 'init'
+        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+        #     backendServiceArm: 'Service-Connection'
+        #     backendAzureRmStorageAccountName: 'storagevistara999'
+        #     backendAzureRmContainerName: 'tfstate'
+        #     backendAzureRmKey: 'backendtfstate'
 
-        - task: TerraformTask@5
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+        # - task: TerraformTask@5
+        #   inputs:
+        #     provider: 'azurerm'
+        #     command: 'validate'
+        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+
+        # - task: TerraformTask@5
+        #   inputs:
+        #     provider: 'azurerm'
+        #     command: 'validate'
+        #     workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
        
       
 
