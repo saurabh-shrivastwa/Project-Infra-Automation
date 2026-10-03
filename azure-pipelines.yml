@@ -65,18 +65,18 @@ stages:
             echo "Listing all files in this directory:"
             dir
             echo "========================================="
-
           displayName: 'DEBUG: Find my files'    
-  #       - task: TerraformTask@5
-  #         displayName: TerraformInitialization
-  #         inputs:
-  #           provider: 'azurerm'
-  #           command: 'init'
-  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
-  #           backendServiceArm: 'Service-Connection'
-  #           backendAzureRmStorageAccountName: 'storagevistara999'
-  #           backendAzureRmContainerName: 'tfstate'
-  #           backendAzureRmKey: 'backendtfstate'
+
+        - task: TerraformTask@5
+          displayName: TerraformInitialization
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'Service-Connection'
+            backendAzureRmStorageAccountName: 'storagevistara999'
+            backendAzureRmContainerName: 'tfstate'
+            backendAzureRmKey: 'backendtfstate'
         
   #       - task: TerraformTask@5
   #         inputs:
