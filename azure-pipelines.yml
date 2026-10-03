@@ -61,7 +61,7 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            workingDirectory: '$(System.DefaultWorkingDirectory)/"C:\Users\SAURABH\Desktop\Infra\Project-Infra-Automation"'
             backendServiceArm: 'Service-Connection'
             backendAzureRmStorageAccountName: 'storagevistara999'
             backendAzureRmContainerName: 'tfstate'
