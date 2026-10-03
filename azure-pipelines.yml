@@ -11,25 +11,38 @@ stages:
     - job: ScanJob
       steps: 
         - script: |
-            curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-            tflint --init
-            tflint
-          displayName: 'TFLint'  
+            where tflint
+            where tfsec
+            where gitleaks
+            where checkov
 
-        - script: |
-            curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-            tfsec .
-          displayName: 'tfsec Terraform Security Scan'
+            tflint --version
+            tfsec --version
+            gitleaks version
+            checkov --version
+          displayName: 'Verify Security Tools'
 
-        - script: |
-            python3 -m pip install --upgrade checkov
-            checkov -d .
-          displayName: 'Checkov IaC Scan'
+        # script to download security tools  
+        # - script: |
+        #     curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+        #     tflint --init
+        #     tflint
+        #   displayName: 'TFLint'  
 
-        - script: |
-            curl -sSfL https://raw.githubusercontent.com/gitleaks/gitleaks/master/install.sh | bash
-            gitleaks detect --source . --verbose
-          displayName: 'Gitleaks Secret Scan'
+        # - script: |
+        #     curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+        #     tfsec .
+        #   displayName: 'tfsec Terraform Security Scan'
+
+        # - script: |
+        #     python3 -m pip install --upgrade checkov
+        #     checkov -d .
+        #   displayName: 'Checkov IaC Scan'
+
+        # - script: |
+        #     curl -sSfL https://raw.githubusercontent.com/gitleaks/gitleaks/master/install.sh | bash
+        #     gitleaks detect --source . --verbose
+        #   displayName: 'Gitleaks Secret Scan'
   
 
   - stage: ContinousIntegration
@@ -39,18 +52,6 @@ stages:
       - job: TerraformJob
         displayName: InitValidatePlan
         steps: 
-        - powershell: |
-            Write-Host "Default Directory: $(System.DefaultWorkingDirectory)"
-            Write-Host "Build Sources Directory: $(Build.SourcesDirectory)"
-            Get-ChildItem "$(System.DefaultWorkingDirectory)"
-          displayName: Check Workspace
-
-        - powershell: |
-            Get-ChildItem "$(System.DefaultWorkingDirectory)" -Recurse -File |
-            Select-Object FullName
-          displayName: Find Repository Files
-  
-
         - task: TerraformInstaller@1
           displayName: TerraformInstaller
           inputs:
