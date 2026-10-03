@@ -4,50 +4,31 @@ trigger:
 pool: Infra-Self-hosted
 
 stages:
-  # - stage: Scan
-  #   displayName: TerraforSecurityScan
+  - stage: Scan
+    displayName: TerraforSecurityScan
+    jobs:
+      - job: ScanJob
+        steps: 
+         - script: |
+             echo "Running TFLint..."
+             tflint
+           displayName: "Run TFLint"
+         - script: |
+             echo "Running tfsec..."
+             tfsec .
+           displayName: "Run tfsec"
+         - script: |
+             echo "Running Checkov..."
+             checkov -d .
+           displayName: "Run Checkov"  
 
-  #   jobs:
-  #   - job: ScanJob
-  #     steps: 
-  #       - script: |
-  #           where tflint
-  #           where tfsec
-  #           where gitleaks
-  #           where checkov
-
-  #           tflint --version
-  #           tfsec --version
-  #           gitleaks version
-  #           checkov --version
-  #         displayName: 'Verify Security Tools'
-
-        # script to download security tools  
-        # - script: |
-        #     curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
-        #     tflint --init
-        #     tflint
-        #   displayName: 'TFLint'  
-
-        # - script: |
-        #     curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
-        #     tfsec .
-        #   displayName: 'tfsec Terraform Security Scan'
-
-        # - script: |
-        #     python3 -m pip install --upgrade checkov
-        #     checkov -d .
-        #   displayName: 'Checkov IaC Scan'
-
-        # - script: |
-        #     curl -sSfL https://raw.githubusercontent.com/gitleaks/gitleaks/master/install.sh | bash
-        #     gitleaks detect --source . --verbose
-        #   displayName: 'Gitleaks Secret Scan'
-  
+         - script: |
+             python3 -m pip install --upgrade checkov
+             checkov -d .
+           displayName: 'Checkov IaC Scan'  
 
   - stage: ContinousIntegration
     displayName: ContinousIntegration
-
     jobs:
       - job: TerraformJob
         displayName: InitValidatePlan
@@ -66,7 +47,6 @@ stages:
             dir
             echo "========================================="
           displayName: 'DEBUG: Find my files'    
-
         - task: TerraformTask@5
           displayName: TerraformInitialization
           inputs:
@@ -77,7 +57,6 @@ stages:
             backendAzureRmStorageAccountName: 'storagevistara999'
             backendAzureRmContainerName: 'tfstate'
             backendAzureRmKey: 'backendtfstate'
-        
         - task: TerraformTask@5
           inputs:
             provider: 'azurerm'
@@ -85,7 +64,6 @@ stages:
             outputTo: 'console'
             customCommand: 'fmt'
             environmentServiceNameAzureRM: 'Service-Connection'
-
         - task: TerraformTask@5
           displayName: TerraformValidation
           inputs:
@@ -98,8 +76,20 @@ stages:
             provider: 'azurerm'
             command: 'plan'
             environmentServiceNameAzureRM: 'Service-Connection'
-
-
+          
+  - stage: ManualValidation
+    displayName: ManualValidation       
+    
+    jobs:
+      - job: ManualValidation
+        pool: server
+        steps:
+        - task: ManualValidation@0
+          inputs:
+            notifyUsers: 'saurabh.shrivastwa87@gmail.com'
+            approvers: 'Saurabh Shrivastwa'
+        
+             
   - stage: ContinousDelivery
     displayName: ContinousDelivery
      
