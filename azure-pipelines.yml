@@ -82,8 +82,8 @@ stages:
           inputs:
             provider: 'azurerm'
             command: 'custom'
-            outputTo: 'file'
-            customCommand: 'terraform fmt'
+            outputTo: 'console'
+            customCommand: 'fmt'
             environmentServiceNameAzureRM: 'Service-Connection'
 
         - task: TerraformTask@5
