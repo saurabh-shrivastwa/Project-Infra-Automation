@@ -3,8 +3,36 @@ trigger:
 
 pool: Infra-Self-hosted
 
-stages: 
-  - stage: TerraformStage
+stages:
+  - stage: Scan
+    displayName: TerraforSecurityScan
+
+    jobs:
+    - job: ScanJob
+      steps: 
+        - script: |
+            curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+            tflint --init
+            tflint
+          displayName: 'TFLint'  
+
+        - script: |
+            curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+            tfsec .
+          displayName: 'tfsec Terraform Security Scan'
+
+        - script: |
+            python3 -m pip install --upgrade checkov
+            checkov -d .
+          displayName: 'Checkov IaC Scan'
+
+        - script: |
+            curl -sSfL https://raw.githubusercontent.com/gitleaks/gitleaks/master/install.sh | bash
+            gitleaks detect --source . --verbose
+          displayName: 'Gitleaks Secret Scan'
+  
+
+  - stage: ContinousIntegration
     displayName: ContinousIntegration
 
     jobs:
@@ -24,9 +52,11 @@ stages:
   
 
         - task: TerraformInstaller@1
+          displayName: TerraformInstaller
           inputs:
             terraformVersion: 'latest'
         - task: TerraformTask@5
+          displayName: TerraformInitialization
           inputs:
             provider: 'azurerm'
             command: 'init'
@@ -35,14 +65,16 @@ stages:
             backendAzureRmStorageAccountName: 'storagevistara999'
             backendAzureRmContainerName: 'tfstate'
             backendAzureRmKey: 'backendtfstate'
-
+        
         - task: TerraformTask@5
           inputs:
             provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-
+            command: 'custom'
+            outputTo: 'file'
+            customCommand: 'terraform fmt'
+            environmentServiceNameAzureRM: 'Service-Connection'
         - task: TerraformTask@5
+          displayName: TerraformValidation
           inputs:
             provider: 'azurerm'
             command: 'validate'
@@ -53,6 +85,33 @@ stages:
             provider: 'azurerm'
             command: 'plan'
             environmentServiceNameAzureRM: 'Service-Connection'
+
+
+  - stage: ContinousDelivery
+    displayName: ContinousDelivery
+     
+    jobs: 
+      - job: TerraformInit
+        steps: 
+        - task: TerraformTask@5
+          displayName: TerraformInitialization
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'Service-Connection'
+            backendAzureRmStorageAccountName: 'storagevistara999'
+            backendAzureRmContainerName: 'tfstate'
+            backendAzureRmKey: 'backendtfstate'       
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            environmentServiceNameAzureRM: 'Service-Connection'
+
+
+
+
        
       
 
