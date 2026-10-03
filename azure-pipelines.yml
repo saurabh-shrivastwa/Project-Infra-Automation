@@ -78,48 +78,49 @@ stages:
             backendAzureRmContainerName: 'tfstate'
             backendAzureRmKey: 'backendtfstate'
         
-  #       - task: TerraformTask@5
-  #         inputs:
-  #           provider: 'azurerm'
-  #           command: 'custom'
-  #           outputTo: 'file'
-  #           customCommand: 'terraform fmt'
-  #           environmentServiceNameAzureRM: 'Service-Connection'
-  #       - task: TerraformTask@5
-  #         displayName: TerraformValidation
-  #         inputs:
-  #           provider: 'azurerm'
-  #           command: 'validate'
-  #           workingDirectory: '$(System.DefaultWorkingDirectory)'
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'custom'
+            outputTo: 'file'
+            customCommand: 'terraform fmt'
+            environmentServiceNameAzureRM: 'Service-Connection'
 
-  #       - task: TerraformTask@5
-  #         inputs:
-  #           provider: 'azurerm'
-  #           command: 'plan'
-  #           environmentServiceNameAzureRM: 'Service-Connection'
+        - task: TerraformTask@5
+          displayName: TerraformValidation
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            environmentServiceNameAzureRM: 'Service-Connection'
 
 
-  # - stage: ContinousDelivery
-  #   displayName: ContinousDelivery
+  - stage: ContinousDelivery
+    displayName: ContinousDelivery
      
-  #   jobs: 
-  #     - job: TerraformInit
-  #       steps: 
-  #       - task: TerraformTask@5
-  #         displayName: TerraformInitialization
-  #         inputs:
-  #           provider: 'azurerm'
-  #           command: 'init'
-  #           workingDirectory: '$(System.DefaultWorkingDirectory)'
-  #           backendServiceArm: 'Service-Connection'
-  #           backendAzureRmStorageAccountName: 'storagevistara999'
-  #           backendAzureRmContainerName: 'tfstate'
-  #           backendAzureRmKey: 'backendtfstate'       
-  #       - task: TerraformTask@5
-  #         inputs:
-  #           provider: 'azurerm'
-  #           command: 'apply'
-  #           environmentServiceNameAzureRM: 'Service-Connection'
+    jobs: 
+      - job: TerraformInit
+        steps: 
+        - task: TerraformTask@5
+          displayName: TerraformInitialization
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(System.DefaultWorkingDirectory)'
+            backendServiceArm: 'Service-Connection'
+            backendAzureRmStorageAccountName: 'storagevistara999'
+            backendAzureRmContainerName: 'tfstate'
+            backendAzureRmKey: 'backendtfstate'       
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            environmentServiceNameAzureRM: 'Service-Connection'
 
 
 
