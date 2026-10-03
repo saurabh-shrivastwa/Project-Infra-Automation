@@ -4,23 +4,23 @@ trigger:
 pool: Infra-Self-hosted
 
 stages:
-  - stage: Scan
-    displayName: TerraforSecurityScan
+  # - stage: Scan
+  #   displayName: TerraforSecurityScan
 
-    jobs:
-    - job: ScanJob
-      steps: 
-        - script: |
-            where tflint
-            where tfsec
-            where gitleaks
-            where checkov
+  #   jobs:
+  #   - job: ScanJob
+  #     steps: 
+  #       - script: |
+  #           where tflint
+  #           where tfsec
+  #           where gitleaks
+  #           where checkov
 
-            tflint --version
-            tfsec --version
-            gitleaks version
-            checkov --version
-          displayName: 'Verify Security Tools'
+  #           tflint --version
+  #           tfsec --version
+  #           gitleaks version
+  #           checkov --version
+  #         displayName: 'Verify Security Tools'
 
         # script to download security tools  
         # - script: |
@@ -65,61 +65,61 @@ stages:
             echo "Listing all files in this directory:"
             dir
             echo "========================================="
-            
+
           displayName: 'DEBUG: Find my files'    
-        - task: TerraformTask@5
-          displayName: TerraformInitialization
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
-            backendServiceArm: 'Service-Connection'
-            backendAzureRmStorageAccountName: 'storagevistara999'
-            backendAzureRmContainerName: 'tfstate'
-            backendAzureRmKey: 'backendtfstate'
+  #       - task: TerraformTask@5
+  #         displayName: TerraformInitialization
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'init'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)/Project-Infra-Automation'
+  #           backendServiceArm: 'Service-Connection'
+  #           backendAzureRmStorageAccountName: 'storagevistara999'
+  #           backendAzureRmContainerName: 'tfstate'
+  #           backendAzureRmKey: 'backendtfstate'
         
-        - task: TerraformTask@5
-          inputs:
-            provider: 'azurerm'
-            command: 'custom'
-            outputTo: 'file'
-            customCommand: 'terraform fmt'
-            environmentServiceNameAzureRM: 'Service-Connection'
-        - task: TerraformTask@5
-          displayName: TerraformValidation
-          inputs:
-            provider: 'azurerm'
-            command: 'validate'
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
+  #       - task: TerraformTask@5
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'custom'
+  #           outputTo: 'file'
+  #           customCommand: 'terraform fmt'
+  #           environmentServiceNameAzureRM: 'Service-Connection'
+  #       - task: TerraformTask@5
+  #         displayName: TerraformValidation
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'validate'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)'
 
-        - task: TerraformTask@5
-          inputs:
-            provider: 'azurerm'
-            command: 'plan'
-            environmentServiceNameAzureRM: 'Service-Connection'
+  #       - task: TerraformTask@5
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'plan'
+  #           environmentServiceNameAzureRM: 'Service-Connection'
 
 
-  - stage: ContinousDelivery
-    displayName: ContinousDelivery
+  # - stage: ContinousDelivery
+  #   displayName: ContinousDelivery
      
-    jobs: 
-      - job: TerraformInit
-        steps: 
-        - task: TerraformTask@5
-          displayName: TerraformInitialization
-          inputs:
-            provider: 'azurerm'
-            command: 'init'
-            workingDirectory: '$(System.DefaultWorkingDirectory)'
-            backendServiceArm: 'Service-Connection'
-            backendAzureRmStorageAccountName: 'storagevistara999'
-            backendAzureRmContainerName: 'tfstate'
-            backendAzureRmKey: 'backendtfstate'       
-        - task: TerraformTask@5
-          inputs:
-            provider: 'azurerm'
-            command: 'apply'
-            environmentServiceNameAzureRM: 'Service-Connection'
+  #   jobs: 
+  #     - job: TerraformInit
+  #       steps: 
+  #       - task: TerraformTask@5
+  #         displayName: TerraformInitialization
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'init'
+  #           workingDirectory: '$(System.DefaultWorkingDirectory)'
+  #           backendServiceArm: 'Service-Connection'
+  #           backendAzureRmStorageAccountName: 'storagevistara999'
+  #           backendAzureRmContainerName: 'tfstate'
+  #           backendAzureRmKey: 'backendtfstate'       
+  #       - task: TerraformTask@5
+  #         inputs:
+  #           provider: 'azurerm'
+  #           command: 'apply'
+  #           environmentServiceNameAzureRM: 'Service-Connection'
 
 
 
