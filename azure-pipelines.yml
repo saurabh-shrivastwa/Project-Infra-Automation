@@ -56,6 +56,17 @@ stages:
           displayName: TerraformInstaller
           inputs:
             terraformVersion: 'latest'
+
+        - script: |
+            echo "========================================="
+            echo "Current System.DefaultWorkingDirectory is:"
+            echo "$(System.DefaultWorkingDirectory)"
+            echo "========================================="
+            echo "Listing all files in this directory:"
+            dir
+            echo "========================================="
+            
+          displayName: 'DEBUG: Find my files'    
         - task: TerraformTask@5
           displayName: TerraformInitialization
           inputs:
